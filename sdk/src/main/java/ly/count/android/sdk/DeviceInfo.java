@@ -40,6 +40,7 @@ import java.util.TimeZone;
 /**
  * This class provides several static methods to retrieve information about
  * the current device and operating environment.
+ * 该类提供了几种静态方法来检索有关当前设备和操作环境的信息。
  *
  * It is important to call setDeviceID early, before logging any session or custom
  * event data.
@@ -235,6 +236,7 @@ class DeviceInfo {
     }
 
     /**
+     * 返回 url-encoded 的属性 json 字符串。
      * Returns a URL-encoded JSON string containing the device metrics
      * to be associated with a begin session event.
      * See the following link for more info:

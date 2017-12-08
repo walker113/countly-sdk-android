@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 队列化 event，并且可以将 event 转化为 json，方便提交到服务器。
  * This class queues event data locally and can convert that event data to JSON
  * for submission to a Count.ly server.
  *
@@ -64,8 +65,10 @@ public class EventQueue {
     String events() {
         String result;
 
+        //从CountlyStore取回EventQueue
         final List<Event> events = countlyStore_.eventsList();
 
+        //Json化
         final JSONArray eventArray = new JSONArray();
         for (Event e : events) {
             eventArray.put(e.toJSON());

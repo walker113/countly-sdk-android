@@ -24,8 +24,12 @@ public class MainActivity extends Activity {
     private Activity activity;
 
     /** You should use try.count.ly instead of YOUR_SERVER for the line below if you are using Countly trial service */
-    final String COUNTLY_SERVER_URL = "YOUR_SERVER";
-    final String COUNTLY_APP_KEY = "YOUR_APP_KEY";
+//    final String COUNTLY_SERVER_URL = "YOUR_SERVER";
+//    final String COUNTLY_SERVER_URL = "https://cloud.count.ly";
+    final String COUNTLY_SERVER_URL = "http://192.168.1.7:32768";
+
+//    final String COUNTLY_APP_KEY = "YOUR_APP_KEY";
+    final String COUNTLY_APP_KEY = "7ef40a91b2aa280bf5dcdd4dbf557b9a6c4ae372";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

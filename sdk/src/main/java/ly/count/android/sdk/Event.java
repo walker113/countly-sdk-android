@@ -47,13 +47,15 @@ class Event {
     private static final String HOUR = "hour";
 
     public String key;
-    public Map<String, String> segmentation;
-    public int count;
-    public double sum;
+    public Map<String, String> segmentation;//分段键值对，用来扩展自定义数据，数量不受限制
+    public int count;//发生此事件的次数
+    public double sum;//事件的全部数值数据，比如一次支付事件的支付金额，可选
     public double dur;
-    public long timestamp;
-    public int hour;
-    public int dow;
+
+    // 由于多个事件可结合在单一请求中，为了正确报告和处理数据（特别是排队数据），还有下面3个属性用来提供数据记录时间：
+    public long timestamp;//时间戳
+    public int hour;//本地时间，0-23
+    public int dow;//星期几
 
     Event () {}
 

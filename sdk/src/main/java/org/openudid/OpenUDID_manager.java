@@ -48,6 +48,8 @@ public class OpenUDID_manager implements ServiceConnection{
   	public void onServiceConnected(ComponentName className, IBinder service) {
 		//Get the OpenUDID from the remote service
 		try {
+            // 若启动成功则可以拿到被启动进程的UDID，以UDID为key，次数为value存入HashMap中
+            // 然后再次startService，结果是递归启动了mMatchingIntents的所有intent，得到一张记录各个进程的的不同udid及其次数的Map
 			//Send a random number to the service
 			android.os.Parcel data = android.os.Parcel.obtain(); 
 			data.writeInt(mRandom.nextInt());
@@ -98,6 +100,7 @@ public class OpenUDID_manager implements ServiceConnection{
 	 * Start the oldest service
 	 */
 	private void startService() {
+        // 启动 mMatchingIntents 的首个 intent 并移除；
 		if (mMatchingIntents.size() > 0) { //There are some Intents untested
 			if (LOG) Log.d(TAG, "Trying service " + mMatchingIntents.get(0).loadLabel(mContext.getPackageManager()));
 		
@@ -113,9 +116,9 @@ public class OpenUDID_manager implements ServiceConnection{
             }
 		} else { //No more service to test
 			
-			getMostFrequentOpenUDID(); //Choose the most frequent
+			getMostFrequentOpenUDID(); //Choose the most frequent返回 Map 中次数最多的 UDID
 	
-			if (OpenUDID == null) //No OpenUDID was chosen, generate one			
+			if (OpenUDID == null) //No OpenUDID was chosen, generate one	没有从其他进程领到 UDID，就生成一个
 				generateOpenUDID();
 			if (LOG) Log.d(TAG, "OpenUDID: " + OpenUDID);
 
@@ -153,28 +156,32 @@ public class OpenUDID_manager implements ServiceConnection{
 	public static boolean isInitialized() {
 		return mInitialized;
 	}
-	
-	/**
+
+
+	/** OpenUDIDAdapter.java sync() 通过反射调用这个方法
 	 * The Method the call at the init of your app
 	 * @param context	you current context
 	 */
 	public static void sync(Context context) {
 		//Initialise the Manager
 		OpenUDID_manager manager = new OpenUDID_manager(context);
-		
+
 		//Try to get the openudid from local preferences
 		OpenUDID = manager.mPreferences.getString(PREF_KEY, null);
 		if (OpenUDID == null) //Not found
 		{
+            // 获取设备上所有的使用了该包的 OpenUDID_service 的 services 列表, intent 形式保存在 mMatchingIntents
 			//Get the list of all OpenUDID services available (including itself)
 			manager.mMatchingIntents = context.getPackageManager().queryIntentServices(new Intent("org.OpenUDID.GETUDID"), 0);
 			if (LOG) Log.d(TAG, manager.mMatchingIntents.size() + " services matches OpenUDID");
-			
+
+            // 尝试从别的使用了 OpenUDID_service 的进程获取
 			if (manager.mMatchingIntents != null)
 				//Start services one by one
 				manager.startService();
 		
 		} else {//Got it, you can now call getOpenUDID()
+            // 本地存在 UDID, 初始化完成，即可以直接调用 getOpenUDID() 来获取了
 			if (LOG) Log.d(TAG, "OpenUDID: " + OpenUDID);
 			mInitialized = true;
 		}

@@ -10,11 +10,12 @@ import android.util.Log;
 public class DeviceId {
     /**
      * Enum used throughout Countly which controls what kind of ID Countly should use.
+     * ID类型分为3种
      */
     public static enum Type {
-        DEVELOPER_SUPPLIED,
-        OPEN_UDID,
-        ADVERTISING_ID,
+        DEVELOPER_SUPPLIED, //开发者自行定义和提供
+        OPEN_UDID,          //openUDID
+        ADVERTISING_ID,     //谷歌广告平台设备标识符
     }
 
     private static final String TAG = "DeviceId";
@@ -23,8 +24,8 @@ public class DeviceId {
     private static final String PREFERENCE_KEY_ID_ROLLBACK_ID = "ly.count.android.api.DeviceId.rollback.id";
     private static final String PREFERENCE_KEY_ID_ROLLBACK_TYPE = "ly.count.android.api.DeviceId.rollback.type";
 
-    private String id;
-    private Type type;
+    private String id;//设备标识ID
+    private Type type;//ID类型
 
     /**
      * Initialize DeviceId with Type of OPEN_UDID or ADVERTISING_ID

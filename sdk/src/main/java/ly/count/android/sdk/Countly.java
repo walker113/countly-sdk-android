@@ -27,6 +27,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 
+import com.socks.library.KLog;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
@@ -98,11 +100,19 @@ public class Countly {
         static final Countly instance = new Countly();
     }
 
+    // connectionQueue 有发送数据的能力，系统定时把 connectionQueue 中的多条数据合并发送到服务器。
     private ConnectionQueue connectionQueue_;
     @SuppressWarnings("FieldCanBeLocal")
     private ScheduledExecutorService timerService_;
     private EventQueue eventQueue_;
     private long prevSessionDurationStartTime_;
+    /**
+     * Session 流开始和退出，利用 activityCount
+     * Android 没有很好的办法监听应用开始和结束，
+     * 所以每个 Activity 都需要调用 Countly.shareInstance().onStart() 和 onStop 方法，
+     * 方法内部用一个 int 变量 activityCount_ 来记录当前 Activity 数量。onStart时activityCount_＋1, onStop 时 －1。
+     *
+     */
     private int activityCount_;
     private boolean disableUpdateSessionRequests_;
     private boolean enableLogging_;
@@ -447,6 +457,7 @@ public class Countly {
      */
     public synchronized void onStart(Activity activity) {
         appLaunchDeepLink = false;
+        KLog.e("eventQueue_      " + eventQueue_.size());
         if (eventQueue_ == null) {
             throw new IllegalStateException("init must be called before onStart");
         }
@@ -670,6 +681,7 @@ public class Countly {
             }
         }
 
+        //直接持久化存入本地 Event 队列
         eventQueue_.recordEvent(key, segmentation, count, sum, dur);
         sendEventsIfNeeded();
     }
@@ -1074,6 +1086,7 @@ public class Countly {
      */
     synchronized void onTimer() {
         final boolean hasActiveSession = activityCount_ > 0;
+        // 记录 session 和 event 到 connectionQueue,并触发发送数据行为，所有的数据都是从 connectionQueue 的 store 中取得。
         if (hasActiveSession) {
             if (!disableUpdateSessionRequests_) {
                 connectionQueue_.updateSession(roundedSecondsSinceLastSessionDurationUpdate());

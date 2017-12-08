@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 
+import com.socks.library.KLog;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,13 +24,15 @@ public class ActivityExampleCustomEvents extends Activity {
     }
 
     public void onClickRecordEvent01(View v) {
-        Countly.sharedInstance().recordEvent("Custom event 1");
+        Countly.sharedInstance().recordEvent("App_Event");
     }
 
+    // 事件键和计数
     public void onClickRecordEvent02(View v) {
-        Countly.sharedInstance().recordEvent("Custom event 2", 3);
+        Countly.sharedInstance().recordEvent("App_Event", 3);
     }
 
+    // 事件键、计数和加和
     public void onClickRecordEvent03(View v) {
         Countly.sharedInstance().recordEvent("Custom event 3", 1, 134);
     }
@@ -39,8 +43,9 @@ public class ActivityExampleCustomEvents extends Activity {
 
     public void onClickRecordEvent05(View v) {
         Map<String, String> segmentation = new HashMap<>();
-        segmentation.put("wall", "green");
-        Countly.sharedInstance().recordEvent("Custom event 5", segmentation, 1, 0, 0);
+        segmentation.put("advert_id", "green");
+        segmentation.put("play_count", "1");
+        Countly.sharedInstance().recordEvent("Record_Event", segmentation, 1, 0, 0);
     }
 
     public void onClickRecordEvent06(View v) {
@@ -62,6 +67,7 @@ public class ActivityExampleCustomEvents extends Activity {
     }
 
     public void onClickRecordEvent09(View v) {
+        KLog.e();
         Countly.sharedInstance().startEvent("Custom event 9");
     }
 

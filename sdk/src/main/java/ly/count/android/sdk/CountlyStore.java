@@ -82,6 +82,7 @@ public class CountlyStore {
 
     /**
      * Returns an unsorted array of the current stored event JSON strings.
+     * 直接从 SharePreference 取出所有 json 表示的 events。
      */
     public String[] events() {
         final String joinedEventsStr = preferences_.getString(EVENTS_PREFERENCE, "");
@@ -89,6 +90,7 @@ public class CountlyStore {
     }
 
     /**
+     * 将 json 表示的 events 反序列化，并排序，返回。
      * Returns a list of the current stored events, sorted by timestamp from oldest to newest.
      */
     public List<Event> eventsList() {
@@ -152,6 +154,7 @@ public class CountlyStore {
 
     /**
      * Adds a custom event to the local store.
+     * 会先读取本地的 events, 把新来的 event 加到末尾，然后整个队列重新被 json 化存储到 Shareference。
      * @param event event to be added to the local store, must not be null
      */
     void addEvent(final Event event) {

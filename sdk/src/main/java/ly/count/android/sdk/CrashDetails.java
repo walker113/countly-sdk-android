@@ -37,6 +37,8 @@ import android.os.Environment;
 import android.os.StatFs;
 import android.util.Log;
 
+import com.socks.library.KLog;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -54,6 +56,7 @@ import java.util.regex.Pattern;
  * This class provides several static methods to retrieve information about
  * the current device and operating environment for crash reporting purposes.
  *
+ * 该类提供了几种静态方法来检索有关当前设备和操作环境的信息以用于崩溃报告。
  */
 class CrashDetails {
     private static ArrayList<String> logs = new ArrayList<String>();
@@ -393,6 +396,7 @@ class CrashDetails {
                 "_background", isInBackground()
                 );
 
+        KLog.e(json.toString());
         try {
             json.put("_custom", getCustomSegments());
         } catch (JSONException e) {
